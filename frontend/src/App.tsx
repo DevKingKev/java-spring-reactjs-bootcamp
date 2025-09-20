@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-function App () {
-  const [message, setMessage] = useState('');
+const App: React.FC = () => {
+  const [message, setMessage] = useState<string>('');
 
   useEffect(() => {
     fetch('/api/message')
-      .then(res => res.text())
-      .then(data => setMessage(data))
-      .catch(err => console.error("Fetch error:", err));
+      .then((res: Response) => res.text())
+      .then((data: string) => setMessage(data))
+      .catch((err: Error) => console.error("Fetch error:", err));
   }, []);
 
   return (
@@ -19,6 +19,6 @@ function App () {
       </header>
     </div>
   );
-}
+};
 
 export default App;
