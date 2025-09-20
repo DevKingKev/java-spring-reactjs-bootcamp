@@ -16,7 +16,7 @@ public class DemoApplication {
     class MessageController {
         @GetMapping("/api/message")
         public String getMessage() {
-            return "Hello again from Spring Boot!";
+            return "Hello again from Spring Boot, should be hot reloading!";
         }
     }
 }
