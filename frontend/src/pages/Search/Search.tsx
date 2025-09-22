@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { searchMovies, setSearchQuery, addToSearchHistory } from '../../store/slices/movieSlice';
-import MovieCard from '../../components/MovieCard/MovieCard';
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hooks/redux";
+import {
+  searchMovies,
+  setSearchQuery,
+  addToSearchHistory,
+} from "../../store/slices/movieSlice";
+import MovieCard from "../../components/MovieCard/MovieCard";
 
 const Search: React.FC = () => {
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [localQuery, setLocalQuery] = useState('');
+  const [localQuery, setLocalQuery] = useState("");
 
-  const { searchResults, isLoading, error, totalResults } = useAppSelector(
+  const { searchResults, isLoading, error } = useAppSelector(
     (state) => state.movies
   );
 
-  const queryParam = searchParams.get('q') || '';
+  const queryParam = searchParams.get("q") || "";
 
   useEffect(() => {
     if (queryParam) {
@@ -43,23 +47,19 @@ const Search: React.FC = () => {
             className="search-input"
           />
           <button type="submit" className="search-button" disabled={isLoading}>
-            {isLoading ? '🔄' : '🔍'}
+            {isLoading ? "🔄" : "🔍"}
           </button>
         </div>
       </form>
 
-      {error && (
-        <div className="error-message">
-          ❌ {error}
-        </div>
-      )}
+      {error && <div className="error-message">❌ {error}</div>}
 
       {searchResults.length > 0 && (
         <div className="search-results">
           <div className="results-header">
             <h2>Search Results</h2>
             <span className="results-count">
-              Found {totalResults} results
+              Found {searchResults.length} results
             </span>
           </div>
 

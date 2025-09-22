@@ -72,7 +72,7 @@ const movieSlice = createSlice( {
         addToSearchHistory: ( state, action: PayloadAction<string> ) => {
             const query = action.payload.trim();
             if ( query && !state.searchHistory.includes( query ) ) {
-                state.searchHistory = [query, ...state.searchHistory].slice( 0, 10 );
+                state.searchHistory = [query, ...state.searchHistory].slice( 0, 20 );
             }
         },
         clearError: ( state ) => {

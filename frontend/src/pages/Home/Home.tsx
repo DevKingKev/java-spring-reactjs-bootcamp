@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/redux';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useAppSelector } from "../../hooks/redux";
 
 const Home: React.FC = () => {
   const { searchHistory } = useAppSelector((state) => state.movies);
@@ -20,13 +20,14 @@ const Home: React.FC = () => {
           <h2>Recent Searches</h2>
           <div className="search-history-list">
             {searchHistory.slice(0, 5).map((query, index) => (
-              <Link
-                key={index}
-                to={`/search?q=${encodeURIComponent(query)}`}
-                className="search-history-item"
-              >
-                {query}
-              </Link>
+              <p>
+                <Link
+                  key={index}
+                  to={`/search?q=${encodeURIComponent(query)}`}
+                  className="search-history-item">
+                  {query}
+                </Link>
+              </p>
             ))}
           </div>
         </div>
