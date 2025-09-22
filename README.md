@@ -32,6 +32,8 @@ docker-compose logs -f
 
 # Stop all services
 docker-compose down
+
+# Rebuild all
 ```
 
 ### 🌐 **Access Points**

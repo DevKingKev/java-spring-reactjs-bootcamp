@@ -1,23 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
+import Layout from './components/Layout/Layout';
+import Home from './pages/Home/Home';
+import Search from './pages/Search/Search';
 import './App.css';
 
 const App: React.FC = () => {
-  const [message, setMessage] = useState<string>('');
-
-  useEffect(() => {
-    fetch('/api/message')
-      .then((res: Response) => res.text())
-      .then((data: string) => setMessage(data))
-      .catch((err: Error) => console.error("Fetch error:", err));
-  }, []);
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>React Frontend</h1>
-        <p><strong>Message from Spring Boot:</strong> {message}</p>
-      </header>
-    </div>
+    <Provider store={store}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="search" element={<Search />} />
+            <Route path="movie/:id" element={<div>Movie Detail Page (Coming Soon)</div>} />
+            <Route path="favorites" element={<div>Favorites Page (Coming Soon)</div>} />
+            <Route path="history" element={<div>History Page (Coming Soon)</div>} />
+          </Route>
+        </Routes>
+      </Router>
+    </Provider>
   );
 };
 
