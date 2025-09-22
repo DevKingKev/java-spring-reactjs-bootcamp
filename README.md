@@ -2,6 +2,9 @@
 
 This application demonstrates how to build a modern full-stack application using **React.js with TypeScript** for the frontend and **Java Spring Boot** for the backend, with **PostgreSQL** as the database.
 
+It is inspired by and based on the project at https://github.com/DevKingKev/lab-imdb-vue3. 
+
+
 ## 🏗️ **Project Structure**
 - **Frontend**: React.js with TypeScript (`frontend/` folder)
 - **Backend**: Java Spring Boot REST API (`backend/` folder)  
