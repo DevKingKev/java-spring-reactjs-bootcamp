@@ -72,7 +72,7 @@ const movieSlice = createSlice( {
         addToSearchHistory: ( state, action: PayloadAction<string> ) => {
             const query = action.payload.trim();
             if ( query && !state.searchHistory.includes( query ) ) {
-                state.searchHistory = [query, ...state.searchHistory].slice( 0, 10 ); // Keep last 10 searches
+                state.searchHistory = [query, ...state.searchHistory].slice( 0, 10 );
             }
         },
         clearError: ( state ) => {
@@ -88,8 +88,9 @@ const movieSlice = createSlice( {
             } )
             .addCase( searchMovies.fulfilled, ( state, action ) => {
                 state.isLoading = false;
-                if ( action.payload.response === 'True' ) {
-                    state.searchResults = action.payload.search || [];
+                // Fix: Use capitalised Response and Search from API
+                if ( action.payload.Response === 'True' ) {
+                    state.searchResults = action.payload.Search || [];
                     state.totalResults = action.payload.totalResults;
                 } else {
                     state.searchResults = [];

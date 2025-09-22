@@ -11,8 +11,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
     <div className="movie-card">
       <Link to={`/movie/${movie.imdbID}`} className="movie-link">
         <div className="movie-poster">
-          {movie.poster && movie.poster !== 'N/A' ? (
-            <img src={movie.poster} alt={movie.title} />
+          {movie.Poster && movie.Poster !== 'N/A' ? (
+            <img src={movie.Poster} alt={movie.Title} />
           ) : (
             <div className="poster-placeholder">
               🎬
@@ -20,9 +20,9 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
           )}
         </div>
         <div className="movie-info">
-          <h3 className="movie-title">{movie.title}</h3>
-          <p className="movie-year">{movie.year}</p>
-          <span className="movie-type">{movie.type}</span>
+          <h3 className="movie-title">{movie.Title}</h3>
+          <p className="movie-year">{movie.Year}</p>
+          <span className="movie-type">{movie.Type}</span>
         </div>
       </Link>
     </div>

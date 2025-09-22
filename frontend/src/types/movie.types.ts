@@ -1,30 +1,48 @@
 export type MovieListItemType = 'movie' | 'series' | 'episode' | 'game';
 
 export interface MovieListItem {
-    title: string;
-    year: string;
+    Title: string;
+    Year: string;
     imdbID: string;
-    type: MovieListItemType;
-    poster: string;
+    Type: MovieListItemType;
+    Poster: string;
+    isFavourite?: boolean;
 }
-
+export interface MovieRating {
+    Source: string;
+    Value: string;
+}
 export interface MovieDetail {
-    title: string;
-    year: string;
+    Title: string;
+    Year: string;
+    Rated: string;
+    Released: string;
+    Runtime: string;
+    Genre: string;
+    Director: string;
+    Writer: string;
+    Actors: string;
+    Plot: string;
+    Language: string;
+    Country: string;
+    Awards: string;
+    Poster: string;
+    Ratings: MovieRating[];
+    Metascore: string;
+    imdbRating: string;
+    imdbVotes: string;
     imdbID: string;
-    type: MovieListItemType;
-    poster: string;
-    plot?: string;
-    director?: string;
-    actors?: string;
-    runtime?: string;
-    genre?: string;
-    imdbRating?: string;
-    response: string;
+    Type: MovieListItemType;
+    DVD: string;
+    BoxOffice: string;
+    Production: string;
+    Website: string;
+    Response: string;
+    isFavourite?: boolean;
 }
 
 export interface MovieSearchResponse {
-    search: MovieListItem[];
+    Search: MovieListItem[];
     totalResults: string;
-    response: string;
+    Response: string;
 }
