@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Copy pom.xml and download dependencies (cache layer)
 COPY pom.xml .
-RUN mvn dependency:go-offline
+RUN mvn dependency:go-offline -B
 
 # Copy source code
 COPY src ./src
@@ -13,4 +13,4 @@ COPY src ./src
 EXPOSE 8080 35729
 
 # Use spring-boot:run for development (enables hot reload)
-CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.jvmArguments='-Dspring.devtools.restart.enabled=true'"]
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.profiles=dev", "-Dspring-boot.run.jvmArguments='-Dspring.devtools.restart.enabled=true -Dspring.devtools.livereload.enabled=true'"]

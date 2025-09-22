@@ -33,7 +33,9 @@ docker-compose logs -f
 # Stop all services
 docker-compose down
 
-# Rebuild all
+# Start development environment with hot reload
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+
 ```
 
 ### 🌐 **Access Points**

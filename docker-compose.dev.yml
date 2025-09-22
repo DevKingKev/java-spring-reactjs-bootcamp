@@ -8,9 +8,40 @@ services:
     volumes:
       - ./backend/src:/app/src
       - ./backend/target:/app/target
+      - maven_cache:/root/.m2
     environment:
       - SPRING_DEVTOOLS_RESTART_ENABLED=true
       - SPRING_DEVTOOLS_LIVERELOAD_ENABLED=true
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/myapp
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_PROFILES_ACTIVE=dev
     ports:
       - "8080:8080"
       - "35729:35729" # LiveReload port
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/package.json:/app/package.json
+      - /app/node_modules # Anonymous volume for node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - FAST_REFRESH=true
+      - REACT_APP_API_URL=http://localhost:8080/api
+    ports:
+      - "3001:3000" # Changed from 3000:3000 to 3001:3000
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+
+volumes:
+  maven_cache:
