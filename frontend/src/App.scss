@@ -172,7 +172,7 @@ $transition: all 0.3s ease;
 .home {
   .hero-section {
     text-align: center;
-    padding: 3rem 0;
+    padding: 0 3rem 0;
     
     h1 {
       font-size: 2.5rem;
@@ -726,7 +726,7 @@ $transition: all 0.3s ease;
 .favourites-page {
   .page-header {
     text-align: center;
-    padding: 2rem 0;
+    padding: 0 0 2rem;
     border-bottom: 1px solid #eee;
     margin-bottom: 2rem;
     
@@ -789,11 +789,11 @@ $transition: all 0.3s ease;
       border-bottom-color: color.adjust($secondary-color, $lightness: 10%);
       
       h1 {
-        color: $text-light;
+        color: $secondary-color;
       }
       
       p {
-        color: #bdc3c7;
+        color: color.adjust($text-dark, $lightness: 20%);
       }
     }
     
