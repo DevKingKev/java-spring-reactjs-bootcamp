@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { MovieListItem } from "../types/movie.types";
+import FavouriteActions from "./FavouriteActions";
 
 interface MovieCardProps {
   movie: MovieListItem;
@@ -23,6 +24,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
           <span className="movie-type">{movie.Type}</span>
         </div>
       </Link>
+      <FavouriteActions movie={movie} size="medium" />
     </div>
   );
 };

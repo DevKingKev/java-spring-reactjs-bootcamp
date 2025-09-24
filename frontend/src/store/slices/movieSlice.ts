@@ -80,6 +80,26 @@ const movieSlice = createSlice( {
         clearError: ( state ) => {
             state.error = null;
         },
+        addToFavourites: ( state, action: PayloadAction<MovieListItem> ) => {
+            const movie = action.payload;
+            const isAlreadyFavourite = state.favouriteMovies.some( fav => fav.imdbID === movie.imdbID );
+            if ( !isAlreadyFavourite ) {
+                state.favouriteMovies.push( movie );
+            }
+        },
+        removeFromFavourites: ( state, action: PayloadAction<string> ) => {
+            const imdbID = action.payload;
+            state.favouriteMovies = state.favouriteMovies.filter( movie => movie.imdbID !== imdbID );
+        },
+        toggleFavourite: ( state, action: PayloadAction<MovieListItem> ) => {
+            const movie = action.payload;
+            const existingIndex = state.favouriteMovies.findIndex( fav => fav.imdbID === movie.imdbID );
+            if ( existingIndex >= 0 ) {
+                state.favouriteMovies.splice( existingIndex, 1 );
+            } else {
+                state.favouriteMovies.push( movie );
+            }
+        },
     },
     extraReducers: ( builder ) => {
         // Search movies
@@ -92,8 +112,17 @@ const movieSlice = createSlice( {
                 state.isLoading = false;
                 // Fix: Use capitalised Response and Search from API
                 if ( action.payload.Response === 'True' ) {
-                    state.searchResults = action.payload.Search || [];
-                    state.totalResults = action.payload.totalResults;
+                    // Remove duplicates based on imdbID
+                    const uniqueMovies = action.payload.Search?.reduce( ( acc: MovieListItem[], movie: MovieListItem ) => {
+                        const exists = acc.find( existingMovie => existingMovie.imdbID === movie.imdbID );
+                        if ( !exists ) {
+                            acc.push( movie );
+                        }
+                        return acc;
+                    }, [] ) || [];
+
+                    state.searchResults = uniqueMovies;
+                    state.totalResults = uniqueMovies.length.toString();
                 } else {
                     state.searchResults = [];
                     state.totalResults = '0';
@@ -131,6 +160,9 @@ export const {
     clearSelectedMovie,
     addToSearchHistory,
     clearError,
+    addToFavourites,
+    removeFromFavourites,
+    toggleFavourite,
 } = movieSlice.actions;
 
 export default movieSlice.reducer;
