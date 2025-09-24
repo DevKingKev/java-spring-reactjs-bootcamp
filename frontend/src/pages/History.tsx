@@ -1,13 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../hooks/redux";
-import { setSearchQuery, searchMovies } from "../store/slices/movieSlice";
+import {
+  setSearchQuery,
+  searchMovies,
+  addToSearchHistory,
+} from "../store/slices/movieSlice";
 
 const History: React.FC = () => {
   const dispatch = useAppDispatch();
   const { searchHistory } = useAppSelector((state) => state.movies);
 
   const handleSearchHistoryClick = (query: string) => {
+    // Add to search history to trigger reordering (move to front)
+    dispatch(addToSearchHistory(query));
     dispatch(setSearchQuery(query));
     dispatch(searchMovies(query));
   };

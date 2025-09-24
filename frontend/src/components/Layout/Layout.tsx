@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, NavLink } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../hooks/redux";
 import { toggleTheme, toggleSidebar } from "../../store/slices/uiSlice";
 
@@ -20,9 +20,10 @@ const Layout: React.FC = () => {
             🎬 Movie Search
           </Link>
           <nav className="nav">
-            <Link to="/">Home</Link>
-            <Link to="/search">Search</Link>
-            <Link to="/favourites">Favourites</Link>
+            <NavLink to="/">Home</NavLink>
+            <NavLink to="/search">Search</NavLink>
+            <NavLink to="/favourites">Favourites</NavLink>
+            <NavLink to="/history">History</NavLink>
           </nav>
           <button
             className="theme-toggle"
@@ -36,10 +37,10 @@ const Layout: React.FC = () => {
         {sidebarOpen && (
           <aside className="sidebar">
             <nav className="sidebar-nav">
-              <Link to="/">🏠 Home</Link>
-              <Link to="/search">🔍 Search</Link>
-              <Link to="/favourites">❤️ Favorites</Link>
-              <Link to="/history">📋 History</Link>
+              <NavLink to="/">🏠 Home</NavLink>
+              <NavLink to="/search">🔍 Search</NavLink>
+              <NavLink to="/favourites">❤️ Favorites</NavLink>
+              <NavLink to="/history">📋 History</NavLink>
             </nav>
           </aside>
         )}
