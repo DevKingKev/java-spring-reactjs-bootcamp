@@ -5,6 +5,7 @@ import axios from 'axios';
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 const FAVOURITE_MOVIES_KEY = 'favouriteMovies';
 const SEARCH_HISTORY_KEY = 'searchHistory';
+const FETCHED_MOVIES_KEY = 'fetchedMovies';
 
 // Helper functions for localStorage
 const saveFavouritesToStorage = ( favourites: MovieListItem[] ) => {
@@ -53,6 +54,28 @@ const loadSearchHistoryFromStorage = (): string[] => {
     return [];
 };
 
+const saveFetchedMoviesToStorage = ( fetchedMovies: { [key: string]: MovieDetail; } ) => {
+    try {
+        localStorage.setItem( FETCHED_MOVIES_KEY, JSON.stringify( fetchedMovies ) );
+    } catch ( error ) {
+        console.error( 'Failed to save fetched movies to localStorage:', error );
+    }
+};
+
+const loadFetchedMoviesFromStorage = (): { [key: string]: MovieDetail; } => {
+    try {
+        const stored = localStorage.getItem( FETCHED_MOVIES_KEY );
+        if ( stored ) {
+            return JSON.parse( stored );
+        }
+    } catch ( error ) {
+        console.error( 'Failed to load fetched movies from localStorage:', error );
+    }
+    // Initialize empty object in localStorage if none exists
+    saveFetchedMoviesToStorage( {} );
+    return {};
+};
+
 // Async thunks for API calls
 export const searchMovies = createAsyncThunk(
     'movies/searchMovies',
@@ -70,8 +93,17 @@ export const searchMovies = createAsyncThunk(
 
 export const fetchMovieDetail = createAsyncThunk(
     'movies/fetchMovieDetail',
-    async ( imdbID: string, { rejectWithValue } ) => {
+    async ( imdbID: string, { getState, rejectWithValue } ) => {
         try {
+            const state = getState() as { movies: MovieState; };
+            const cachedMovie = state.movies.fetchedMovies[imdbID];
+
+            // Return cached movie if it exists
+            if ( cachedMovie ) {
+                return cachedMovie;
+            }
+
+            // Fetch from API if not cached
             const response = await axios.get<MovieDetail>( `${API_BASE_URL}/movies/${imdbID}` );
             return response.data;
         } catch ( error: any ) {
@@ -84,18 +116,21 @@ interface MovieState {
     searchResults: MovieListItem[];
     favouriteMovies: MovieListItem[];
     selectedMovie: MovieDetail | null;
+    fetchedMovies: { [key: string]: MovieDetail; };
     searchQuery: string;
     totalResults: string;
     isLoading: boolean;
     isLoadingDetail: boolean;
     error: string | null;
     searchHistory: string[];
+
 }
 
 const initialState: MovieState = {
     searchResults: [],
     favouriteMovies: loadFavouritesFromStorage(), // Load from localStorage on initialization
     selectedMovie: null,
+    fetchedMovies: loadFetchedMoviesFromStorage(),
     searchQuery: '',
     totalResults: '0',
     isLoading: false,
@@ -220,6 +255,12 @@ const movieSlice = createSlice( {
             .addCase( fetchMovieDetail.fulfilled, ( state, action ) => {
                 state.isLoadingDetail = false;
                 state.selectedMovie = action.payload;
+
+                // Store in fetchedMovies cache
+                state.fetchedMovies[action.payload.imdbID] = action.payload;
+
+                // Save to localStorage
+                saveFetchedMoviesToStorage( state.fetchedMovies );
             } )
             .addCase( fetchMovieDetail.rejected, ( state, action ) => {
                 state.isLoadingDetail = false;
