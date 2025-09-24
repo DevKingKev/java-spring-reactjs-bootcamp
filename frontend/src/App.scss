@@ -219,13 +219,6 @@ $transition: all 0.3s ease;
     }
   }
 }
-
-// Search Page Styles
-.search-page {
-  .search-form {
-    margin-bottom: 2rem;
-  }
-  
   .search-input-group {
     display: flex;
     gap: 0.5rem;
@@ -252,6 +245,14 @@ $transition: all 0.3s ease;
       font-size: 1rem;
     }
   }
+  
+// Search Page Styles
+.search-page {
+  .search-form {
+    margin-bottom: 2rem;
+  }
+  
+
   
   .error-message {
     background-color: $accent-color;
