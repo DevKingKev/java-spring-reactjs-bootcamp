@@ -24,13 +24,18 @@ const MovieList: React.FC<MovieListProps> = ({
 }) => {
   const { searchQuery } = useAppSelector((state) => state.movies);
 
+  // Sort movies alphabetically by title
+  const sortedMovies = [...movies].sort((a, b) =>
+    a.Title.localeCompare(b.Title, undefined, { sensitivity: "base" })
+  );
+
   // Generate title with search query if enabled
   const displayTitle =
     showSearchQuery && searchQuery
       ? `${title || "Search Results"}: ${searchQuery}`
       : title;
 
-  if (movies.length === 0) {
+  if (sortedMovies.length === 0) {
     return (
       <div className={`no-results ${className}`}>
         <h3>{emptyMessage}</h3>
@@ -46,14 +51,16 @@ const MovieList: React.FC<MovieListProps> = ({
           <h2>{displayTitle}</h2>
           {showCount && (
             <span className="results-count">
-              {movies.length === 1 ? "1 movie" : `${movies.length} movies`}
+              {sortedMovies.length === 1
+                ? "1 movie"
+                : `${sortedMovies.length} movies`}
             </span>
           )}
         </div>
       )}
 
       <div className="movie-grid">
-        {movies.map((movie) => (
+        {sortedMovies.map((movie) => (
           <MovieCard key={movie.imdbID} movie={movie} />
         ))}
       </div>
