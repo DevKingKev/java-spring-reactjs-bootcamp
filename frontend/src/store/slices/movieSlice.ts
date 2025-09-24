@@ -3,6 +3,32 @@ import { MovieListItem, MovieDetail, MovieSearchResponse } from '../../types/mov
 import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
+const FAVOURITE_MOVIES_KEY = 'favouriteMovies';
+
+// Helper functions for localStorage
+const saveFavouritesToStorage = ( favourites: MovieListItem[] ) => {
+    try {
+        localStorage.setItem( FAVOURITE_MOVIES_KEY, JSON.stringify( favourites ) );
+    } catch ( error ) {
+        console.error( 'Failed to save favourites to localStorage:', error );
+    }
+};
+
+const loadFavouritesFromStorage = (): MovieListItem[] => {
+    try {
+        const stored = localStorage.getItem( FAVOURITE_MOVIES_KEY );
+        if ( stored ) {
+            return JSON.parse( stored ).sort( ( a: MovieListItem, b: MovieListItem ) =>
+                a.Year.localeCompare( b.Year )
+            );
+        }
+    } catch ( error ) {
+        console.error( 'Failed to load favourites from localStorage:', error );
+    }
+    // Initialize empty array in localStorage if none exists
+    saveFavouritesToStorage( [] );
+    return [];
+};
 
 // Async thunks for API calls
 export const searchMovies = createAsyncThunk(
@@ -45,7 +71,7 @@ interface MovieState {
 
 const initialState: MovieState = {
     searchResults: [],
-    favouriteMovies: [],
+    favouriteMovies: loadFavouritesFromStorage(), // Load from localStorage on initialization
     selectedMovie: null,
     searchQuery: '',
     totalResults: '0',
@@ -84,21 +110,43 @@ const movieSlice = createSlice( {
             const movie = action.payload;
             const isAlreadyFavourite = state.favouriteMovies.some( fav => fav.imdbID === movie.imdbID );
             if ( !isAlreadyFavourite ) {
-                state.favouriteMovies.push( movie );
+                // Add movie and sort by year
+                const updatedFavourites = [...state.favouriteMovies, movie].sort( ( a, b ) =>
+                    a.Year.localeCompare( b.Year )
+                );
+                state.favouriteMovies = updatedFavourites;
+
+                // Save to localStorage
+                saveFavouritesToStorage( updatedFavourites );
             }
         },
         removeFromFavourites: ( state, action: PayloadAction<string> ) => {
             const imdbID = action.payload;
-            state.favouriteMovies = state.favouriteMovies.filter( movie => movie.imdbID !== imdbID );
+            const updatedFavourites = state.favouriteMovies.filter( movie => movie.imdbID !== imdbID );
+            state.favouriteMovies = updatedFavourites;
+
+            // Save to localStorage
+            saveFavouritesToStorage( updatedFavourites );
         },
         toggleFavourite: ( state, action: PayloadAction<MovieListItem> ) => {
             const movie = action.payload;
             const existingIndex = state.favouriteMovies.findIndex( fav => fav.imdbID === movie.imdbID );
+            let updatedFavourites: MovieListItem[];
+
             if ( existingIndex >= 0 ) {
-                state.favouriteMovies.splice( existingIndex, 1 );
+                // Remove from favourites
+                updatedFavourites = state.favouriteMovies.filter( ( _, index ) => index !== existingIndex );
             } else {
-                state.favouriteMovies.push( movie );
+                // Add to favourites and sort by year
+                updatedFavourites = [...state.favouriteMovies, movie].sort( ( a, b ) =>
+                    a.Year.localeCompare( b.Year )
+                );
             }
+
+            state.favouriteMovies = updatedFavourites;
+
+            // Save to localStorage
+            saveFavouritesToStorage( updatedFavourites );
         },
     },
     extraReducers: ( builder ) => {

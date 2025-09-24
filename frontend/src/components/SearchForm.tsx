@@ -35,10 +35,10 @@ const SearchForm: React.FC<SearchFormProps> = ({
 
   // Sync with URL params (mainly for Search page)
   useEffect(() => {
-    if (queryParam && redirectToSearch) {
+    if (queryParam) {
       setLocalQuery(queryParam);
     }
-  }, [queryParam, redirectToSearch]);
+  }, [queryParam]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

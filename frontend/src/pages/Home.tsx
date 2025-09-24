@@ -21,8 +21,11 @@ const Home: React.FC = () => {
         />
       </div>
 
+      {/* Show loading state */}
+      {isLoading && <div className="loading-spinner"></div>}
+
       {/* Show search results if any */}
-      {searchResults.length > 0 && (
+      {!isLoading && searchResults.length > 0 && (
         <MovieList
           movies={searchResults}
           title="Search Results"
@@ -32,11 +35,8 @@ const Home: React.FC = () => {
         />
       )}
 
-      {/* Show loading state */}
-      {isLoading && <div className="loading-spinner"></div>}
-
       {/* Show error state */}
-      {error && <div className="error-message">❌ {error}</div>}
+      {!isLoading && error && <div className="error-message">❌ {error}</div>}
 
       {searchHistory.length > 0 && (
         <div className="recent-searches">

@@ -222,7 +222,6 @@ $transition: all 0.3s ease;
   .search-input-group {
     display: flex;
     gap: 0.5rem;
-    max-width: 600px;
     
     .search-input {
       flex: 1;
@@ -245,7 +244,7 @@ $transition: all 0.3s ease;
       font-size: 1rem;
     }
   }
-  
+
 // Search Page Styles
 .search-page {
   .search-form {

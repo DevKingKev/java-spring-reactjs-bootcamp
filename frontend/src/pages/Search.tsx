@@ -36,7 +36,9 @@ const Search: React.FC = () => {
 
       {error && <div className="error-message">❌ {error}</div>}
 
-      {searchResults.length > 0 && (
+      {isLoading && <div className="loading-spinner"></div>}
+
+      {!isLoading && searchResults.length > 0 && (
         <MovieList
           movies={searchResults}
           title="Search Results"
