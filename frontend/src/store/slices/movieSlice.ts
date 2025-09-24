@@ -33,6 +33,7 @@ export const fetchMovieDetail = createAsyncThunk(
 
 interface MovieState {
     searchResults: MovieListItem[];
+    favouriteMovies: MovieListItem[];
     selectedMovie: MovieDetail | null;
     searchQuery: string;
     totalResults: string;
@@ -44,6 +45,7 @@ interface MovieState {
 
 const initialState: MovieState = {
     searchResults: [],
+    favouriteMovies: [],
     selectedMovie: null,
     searchQuery: '',
     totalResults: '0',

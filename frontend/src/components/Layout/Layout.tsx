@@ -1,7 +1,7 @@
-import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '../../hooks/redux';
-import { toggleTheme, toggleSidebar } from '../../store/slices/uiSlice';
+import React from "react";
+import { Outlet, Link } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../../hooks/redux";
+import { toggleTheme, toggleSidebar } from "../../store/slices/uiSlice";
 
 const Layout: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -13,8 +13,7 @@ const Layout: React.FC = () => {
         <div className="header-content">
           <button
             className="sidebar-toggle"
-            onClick={() => dispatch(toggleSidebar())}
-          >
+            onClick={() => dispatch(toggleSidebar())}>
             ☰
           </button>
           <Link to="/" className="logo">
@@ -27,9 +26,8 @@ const Layout: React.FC = () => {
           </nav>
           <button
             className="theme-toggle"
-            onClick={() => dispatch(toggleTheme())}
-          >
-            {theme === 'light' ? '🌙' : '☀️'}
+            onClick={() => dispatch(toggleTheme())}>
+            {theme === "light" ? "🌙" : "☀️"}
           </button>
         </div>
       </header>
