@@ -4,6 +4,7 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/api';
 const FAVOURITE_MOVIES_KEY = 'favouriteMovies';
+const SEARCH_HISTORY_KEY = 'searchHistory';
 
 // Helper functions for localStorage
 const saveFavouritesToStorage = ( favourites: MovieListItem[] ) => {
@@ -27,6 +28,28 @@ const loadFavouritesFromStorage = (): MovieListItem[] => {
     }
     // Initialize empty array in localStorage if none exists
     saveFavouritesToStorage( [] );
+    return [];
+};
+
+const saveSearchHistoryToStorage = ( history: string[] ) => {
+    try {
+        localStorage.setItem( SEARCH_HISTORY_KEY, JSON.stringify( history ) );
+    } catch ( error ) {
+        console.error( 'Failed to save search history to localStorage:', error );
+    }
+};
+
+const loadSearchHistoryFromStorage = (): string[] => {
+    try {
+        const stored = localStorage.getItem( SEARCH_HISTORY_KEY );
+        if ( stored ) {
+            return JSON.parse( stored );
+        }
+    } catch ( error ) {
+        console.error( 'Failed to load search history from localStorage:', error );
+    }
+    // Initialize empty array in localStorage if none exists
+    saveSearchHistoryToStorage( [] );
     return [];
 };
 
@@ -78,7 +101,7 @@ const initialState: MovieState = {
     isLoading: false,
     isLoadingDetail: false,
     error: null,
-    searchHistory: [],
+    searchHistory: loadSearchHistoryFromStorage(), // Load from localStorage on initialization
 };
 
 const movieSlice = createSlice( {
@@ -100,7 +123,11 @@ const movieSlice = createSlice( {
         addToSearchHistory: ( state, action: PayloadAction<string> ) => {
             const query = action.payload.trim();
             if ( query && !state.searchHistory.includes( query ) ) {
-                state.searchHistory = [query, ...state.searchHistory].slice( 0, 20 );
+                const updatedHistory = [query, ...state.searchHistory].slice( 0, 20 );
+                state.searchHistory = updatedHistory;
+
+                // Save to localStorage
+                saveSearchHistoryToStorage( updatedHistory );
             }
         },
         clearError: ( state ) => {

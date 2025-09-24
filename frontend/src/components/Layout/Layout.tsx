@@ -22,7 +22,7 @@ const Layout: React.FC = () => {
           <nav className="nav">
             <Link to="/">Home</Link>
             <Link to="/search">Search</Link>
-            <Link to="/favorites">Favorites</Link>
+            <Link to="/favourites">Favourites</Link>
           </nav>
           <button
             className="theme-toggle"
@@ -38,7 +38,7 @@ const Layout: React.FC = () => {
             <nav className="sidebar-nav">
               <Link to="/">🏠 Home</Link>
               <Link to="/search">🔍 Search</Link>
-              <Link to="/favorites">❤️ Favorites</Link>
+              <Link to="/favourites">❤️ Favorites</Link>
               <Link to="/history">📋 History</Link>
             </nav>
           </aside>
