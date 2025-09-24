@@ -157,8 +157,12 @@ const movieSlice = createSlice( {
         },
         addToSearchHistory: ( state, action: PayloadAction<string> ) => {
             const query = action.payload.trim();
-            if ( query && !state.searchHistory.includes( query ) ) {
-                const updatedHistory = [query, ...state.searchHistory].slice( 0, 20 );
+            if ( query ) {
+                // Remove the query if it already exists in the history
+                const filteredHistory = state.searchHistory.filter( item => item !== query );
+
+                // Add the query to the front and limit to 20 items
+                const updatedHistory = [query, ...filteredHistory].slice( 0, 20 );
                 state.searchHistory = updatedHistory;
 
                 // Save to localStorage

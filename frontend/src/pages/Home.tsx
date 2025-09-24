@@ -42,7 +42,7 @@ const Home: React.FC = () => {
         <div className="recent-searches">
           <h2>Recent Searches</h2>
           <div className="search-history-list">
-            {searchHistory.slice(0, 5).map((query, index) => (
+            {searchHistory.slice(0, 10).map((query, index) => (
               <p key={index}>
                 <Link
                   to={`/search?q=${encodeURIComponent(query)}`}
