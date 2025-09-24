@@ -29,14 +29,24 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({
       <div className="movie-details-container">
         <div className="movie-poster-section">
           {movie.Poster && movie.Poster !== "N/A" ? (
-            <img
-              src={movie.Poster}
-              alt={movie.Title}
-              className="movie-poster-large"
-            />
+            <div className="image-container">
+              <img
+                src={movie.Poster}
+                alt={movie.Title}
+                className="movie-poster-large"
+              />
+            </div>
           ) : (
             <div className="poster-placeholder-large">🎬</div>
           )}
+          <div className="movie-actions">
+            <FavouriteActions
+              movie={movieListItem}
+              variant="button"
+              showLabel={true}
+              size="large"
+            />
+          </div>
         </div>
 
         <div className="movie-info-section">
@@ -48,14 +58,6 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({
                 <span className="movie-rating">{movie.Rated}</span>
                 <span className="movie-runtime">{movie.Runtime}</span>
               </div>
-            </div>
-            <div className="movie-actions">
-              <FavouriteActions
-                movie={movieListItem}
-                variant="button"
-                showLabel={true}
-                size="large"
-              />
             </div>
           </div>
 
@@ -86,10 +88,12 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({
               <p>{movie.Actors}</p>
             </div>
 
-            <div className="detail-section">
-              <h3>Writer</h3>
-              <p>{movie.Writer}</p>
-            </div>
+            {movie.Writer && movie.Writer !== "N/A" && (
+              <div className="detail-section">
+                <h3>Writer</h3>
+                <p>{movie.Writer}</p>
+              </div>
+            )}
 
             {movie.imdbRating && movie.imdbRating !== "N/A" && (
               <div className="detail-section">
@@ -110,20 +114,26 @@ const MovieDetails: React.FC<MovieDetailsProps> = ({
               </div>
             )}
 
-            <div className="detail-section">
-              <h3>Release Date</h3>
-              <p>{movie.Released}</p>
-            </div>
+            {movie.Released && movie.Released !== "N/A" && (
+              <div className="detail-section">
+                <h3>Release Date</h3>
+                <p>{movie.Released}</p>
+              </div>
+            )}
 
-            <div className="detail-section">
-              <h3>Language</h3>
-              <p>{movie.Language}</p>
-            </div>
+            {movie.Released && movie.Released !== "N/A" && (
+              <div className="detail-section">
+                <h3>Language</h3>
+                <p>{movie.Language}</p>
+              </div>
+            )}
 
-            <div className="detail-section">
-              <h3>Country</h3>
-              <p>{movie.Country}</p>
-            </div>
+            {movie.Country && movie.Country !== "N/A" && (
+              <div className="detail-section">
+                <h3>Country</h3>
+                <p>{movie.Country}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
