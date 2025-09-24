@@ -5,7 +5,7 @@ import { store } from "./store/store";
 import Layout from "./components/Layout/Layout";
 import Home from "./pages/Home";
 import Search from "./pages/Search";
-import "./App.css";
+import "./App.scss"; // Changed from App.css to App.scss
 
 const App: React.FC = () => {
   return (
