@@ -523,6 +523,42 @@ $transition: all 0.3s ease;
       background-color: rgba(0, 0, 0, 0.9);
     }
   }
+  
+  // Fix movie title visibility in dark mode
+  .movie-card {
+    .movie-info {
+      .movie-title {
+        color: color.adjust($text-light, $lightness: -15%);
+      }
+      
+      .movie-year {
+        color: #bdc3c7;
+      }
+    }
+  }
+  
+  // MovieDetails dark theme
+  .movie-details {
+    .movie-title-large {
+      color: $text-light;
+    }
+    
+    .movie-meta {
+      span {
+        color: #bdc3c7;
+      }
+    }
+    
+    .detail-section {
+      h3 {
+        color: $text-light;
+      }
+      
+      p {
+        color: #bdc3c7;
+      }
+    }
+  }
 }
 
 // MovieDetails Component Styles
