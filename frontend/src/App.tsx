@@ -6,6 +6,7 @@ import Layout from "./components/Layout/Layout";
 import Home from "./pages/Home";
 import Search from "./pages/Search";
 import Favourites from "./pages/Favourites";
+import Movie from "./pages/Movie";
 import "./App.scss";
 
 const App: React.FC = () => {
@@ -17,10 +18,7 @@ const App: React.FC = () => {
             <Route index element={<Home />} />
             <Route path="search" element={<Search />} />
             <Route path="favourites" element={<Favourites />} />
-            <Route
-              path="movie/:id"
-              element={<div>Movie Detail Page (Coming Soon)</div>}
-            />
+            <Route path="movie/:id" element={<Movie />} />
             <Route
               path="history"
               element={<div>History Page (Coming Soon)</div>}
