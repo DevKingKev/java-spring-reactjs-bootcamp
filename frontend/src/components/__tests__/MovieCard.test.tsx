@@ -3,10 +3,10 @@ import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
-import MovieCard from "./MovieCard";
-import movieReducer from "../store/slices/movieSlice";
-import uiReducer from "../store/slices/uiSlice";
-import { MovieListItem } from "../types/movie.types";
+import MovieCard from "../MovieCard";
+import movieReducer from "../../store/slices/movieSlice";
+import uiReducer from "../../store/slices/uiSlice";
+import { MovieListItem } from "../../types/movie.types";
 
 // Mock store for testing
 const createMockStore = () => {

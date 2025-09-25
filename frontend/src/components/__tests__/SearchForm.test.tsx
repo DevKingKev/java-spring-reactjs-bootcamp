@@ -4,9 +4,9 @@ import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
-import SearchForm from "./SearchForm";
-import movieReducer from "../store/slices/movieSlice";
-import uiReducer from "../store/slices/uiSlice";
+import SearchForm from "../SearchForm";
+import movieReducer from "../../store/slices/movieSlice";
+import uiReducer from "../../store/slices/uiSlice";
 
 const createMockStore = () => {
   return configureStore({
