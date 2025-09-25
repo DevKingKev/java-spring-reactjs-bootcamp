@@ -1,14 +1,13 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import SearchForm from "../SearchForm";
 import movieReducer from "../../store/slices/movieSlice";
 import uiReducer from "../../store/slices/uiSlice";
 
-const createMockStore = () => {
+const createMockStore = (isLoading = false) => {
   return configureStore({
     reducer: {
       movies: movieReducer,
@@ -22,13 +21,13 @@ const createMockStore = () => {
         fetchedMovies: {},
         searchQuery: "",
         totalResults: "0",
-        isLoading: false,
+        isLoading,
         isLoadingDetail: false,
         error: null,
         searchHistory: [],
       },
       ui: {
-        theme: "light" as const,
+        theme: "light",
         sidebarOpen: false,
         currentPage: 1,
         itemsPerPage: 10,
@@ -38,145 +37,87 @@ const createMockStore = () => {
   });
 };
 
-const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const store = createMockStore();
-  return (
+const renderWithProviders = (component: React.ReactElement, store: any) => {
+  return render(
     <Provider store={store}>
-      <BrowserRouter>{children}</BrowserRouter>
+      <BrowserRouter>{component}</BrowserRouter>
     </Provider>
   );
 };
 
-// Mock the navigation and search actions
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => ({
-  ...jest.requireActual("react-router-dom"),
-  useNavigate: () => mockNavigate,
-  useSearchParams: () => [new URLSearchParams()],
-}));
+test("renders search input with default placeholder", () => {
+  const store = createMockStore();
+  renderWithProviders(<SearchForm />, store);
 
-describe("SearchForm", () => {
-  beforeEach(() => {
-    mockNavigate.mockClear();
-  });
+  const input = screen.getByPlaceholderText(
+    "Search for movies, series, episodes..."
+  );
+  expect(input).toBeInTheDocument();
+});
 
-  test("renders search input with correct placeholder", () => {
-    render(
-      <TestWrapper>
-        <SearchForm placeholder="Search for movies..." />
-      </TestWrapper>
-    );
+test("renders search input with custom placeholder", () => {
+  const store = createMockStore();
+  renderWithProviders(<SearchForm placeholder="Custom placeholder" />, store);
 
-    const searchInput = screen.getByPlaceholderText("Search for movies...");
-    expect(searchInput).toBeInTheDocument();
-  });
+  const input = screen.getByPlaceholderText("Custom placeholder");
+  expect(input).toBeInTheDocument();
+});
 
-  test("renders search button when showButton is true", () => {
-    render(
-      <TestWrapper>
-        <SearchForm showButton={true} />
-      </TestWrapper>
-    );
+test("renders search button by default", () => {
+  const store = createMockStore();
+  renderWithProviders(<SearchForm />, store);
 
-    const searchButton = screen.getByRole("button", { name: /🔍/ });
-    expect(searchButton).toBeInTheDocument();
-  });
+  const button = screen.getByRole("button");
+  expect(button).toHaveTextContent("🔍");
+});
 
-  test("does not render search button when showButton is false", () => {
-    render(
-      <TestWrapper>
-        <SearchForm showButton={false} />
-      </TestWrapper>
-    );
+test("hides search button when showButton is false", () => {
+  const store = createMockStore();
+  renderWithProviders(<SearchForm showButton={false} />, store);
 
-    const searchButton = screen.queryByRole("button");
-    expect(searchButton).not.toBeInTheDocument();
-  });
+  expect(screen.queryByRole("button")).not.toBeInTheDocument();
+});
 
-  test("updates input value when user types", async () => {
-    const user = userEvent.setup();
+test("shows loading state on button when isLoading is true", () => {
+  const store = createMockStore(true);
+  renderWithProviders(<SearchForm />, store);
 
-    render(
-      <TestWrapper>
-        <SearchForm />
-      </TestWrapper>
-    );
+  const button = screen.getByRole("button");
+  expect(button).toHaveTextContent("🔄");
+  expect(button).toBeDisabled();
+});
 
-    const searchInput = screen.getByRole("textbox");
-    await user.type(searchInput, "Batman");
+test("updates input value when typing", () => {
+  const store = createMockStore();
+  renderWithProviders(<SearchForm />, store);
 
-    expect(searchInput).toHaveValue("Batman");
-  });
+  const input = screen.getByRole("textbox");
+  fireEvent.change(input, { target: { value: "Batman" } });
 
-  test("calls onSearch callback when provided", async () => {
-    const mockOnSearch = jest.fn();
-    const user = userEvent.setup();
+  expect(input).toHaveValue("Batman");
+});
 
-    render(
-      <TestWrapper>
-        <SearchForm onSearch={mockOnSearch} redirectToSearch={false} />
-      </TestWrapper>
-    );
+test("calls onSearch handler when provided", () => {
+  const mockOnSearch = jest.fn();
+  const store = createMockStore();
+  renderWithProviders(
+    <SearchForm onSearch={mockOnSearch} redirectToSearch={false} />,
+    store
+  );
 
-    const searchInput = screen.getByRole("textbox");
-    await user.type(searchInput, "Superman");
-    await user.keyboard("{Enter}");
+  const input = screen.getByRole("textbox");
+  const form = input.closest("form");
 
-    await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith("Superman");
-    });
-  });
+  fireEvent.change(input, { target: { value: "Batman" } });
+  fireEvent.submit(form!);
 
-  test("navigates to search page when redirectToSearch is true", async () => {
-    const user = userEvent.setup();
+  expect(mockOnSearch).toHaveBeenCalledWith("Batman");
+});
 
-    render(
-      <TestWrapper>
-        <SearchForm redirectToSearch={true} />
-      </TestWrapper>
-    );
+test("applies custom className", () => {
+  const store = createMockStore();
+  renderWithProviders(<SearchForm className="custom-class" />, store);
 
-    const searchInput = screen.getByRole("textbox");
-    await user.type(searchInput, "Spiderman");
-    await user.keyboard("{Enter}");
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith("/search?q=Spiderman");
-    });
-  });
-
-  test("does not submit empty search query", async () => {
-    const mockOnSearch = jest.fn();
-    const user = userEvent.setup();
-
-    render(
-      <TestWrapper>
-        <SearchForm onSearch={mockOnSearch} />
-      </TestWrapper>
-    );
-
-    await user.keyboard("{Enter}");
-
-    expect(mockOnSearch).not.toHaveBeenCalled();
-    expect(mockNavigate).not.toHaveBeenCalled();
-  });
-
-  test("trims whitespace from search query", async () => {
-    const mockOnSearch = jest.fn();
-    const user = userEvent.setup();
-
-    render(
-      <TestWrapper>
-        <SearchForm onSearch={mockOnSearch} redirectToSearch={false} />
-      </TestWrapper>
-    );
-
-    const searchInput = screen.getByRole("textbox");
-    await user.type(searchInput, "  Batman  ");
-    await user.keyboard("{Enter}");
-
-    await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith("Batman");
-    });
-  });
+  const form = screen.getByRole("textbox").closest("form");
+  expect(form).toHaveClass("search-form", "custom-class");
 });

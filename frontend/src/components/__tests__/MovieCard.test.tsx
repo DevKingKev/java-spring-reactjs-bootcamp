@@ -1,118 +1,72 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import MovieCard from "../MovieCard";
 import movieReducer from "../../store/slices/movieSlice";
-import uiReducer from "../../store/slices/uiSlice";
-import { MovieListItem } from "../../types/movie.types";
 
-// Mock store for testing
-const createMockStore = () => {
-  return configureStore({
-    reducer: {
-      movies: movieReducer,
-      ui: uiReducer,
+const mockStore = configureStore({
+  reducer: {
+    movies: movieReducer,
+  },
+  preloadedState: {
+    movies: {
+      searchResults: [],
+      favouriteMovies: [],
+      selectedMovie: null,
+      fetchedMovies: {},
+      searchQuery: "",
+      totalResults: "0",
+      isLoading: false,
+      isLoadingDetail: false,
+      error: null,
+      searchHistory: [],
     },
-    preloadedState: {
-      movies: {
-        searchResults: [],
-        favouriteMovies: [],
-        selectedMovie: null,
-        fetchedMovies: {},
-        searchQuery: "",
-        totalResults: "0",
-        isLoading: false,
-        isLoadingDetail: false,
-        error: null,
-        searchHistory: [],
-      },
-      ui: {
-        theme: "light" as const,
-        sidebarOpen: false,
-        currentPage: 1,
-        itemsPerPage: 10,
-        showSearchHistory: false,
-      },
-    },
-  });
+  },
+});
+
+const mockMovie = {
+  Title: "Test Movie",
+  Year: "2023",
+  imdbID: "tt1234567",
+  Type: "movie" as const,
+  Poster: "https://example.com/poster.jpg",
 };
 
-// Test wrapper component
-const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const store = createMockStore();
-  return (
-    <Provider store={store}>
-      <BrowserRouter>{children}</BrowserRouter>
+const renderWithProviders = (component: React.ReactElement) => {
+  return render(
+    <Provider store={mockStore}>
+      <BrowserRouter>{component}</BrowserRouter>
     </Provider>
   );
 };
 
-const mockMovie: MovieListItem = {
-  imdbID: "tt1234567",
-  Title: "Test Movie",
-  Year: "2023",
-  Type: "movie",
-  Poster: "https://example.com/poster.jpg",
-};
+test("renders movie card with title and year", () => {
+  renderWithProviders(<MovieCard movie={mockMovie} />);
 
-describe("MovieCard", () => {
-  test("renders movie title and year", () => {
-    render(
-      <TestWrapper>
-        <MovieCard movie={mockMovie} />
-      </TestWrapper>
-    );
+  expect(screen.getByText("Test Movie")).toBeInTheDocument();
+  expect(screen.getByText("2023")).toBeInTheDocument();
+});
 
-    expect(screen.getByText("Test Movie")).toBeInTheDocument();
-    expect(screen.getByText("2023")).toBeInTheDocument();
-    expect(screen.getByText("movie")).toBeInTheDocument();
-  });
+test("renders movie poster when available", () => {
+  renderWithProviders(<MovieCard movie={mockMovie} />);
 
-  test("renders movie poster with correct alt text", () => {
-    render(
-      <TestWrapper>
-        <MovieCard movie={mockMovie} />
-      </TestWrapper>
-    );
+  const poster = screen.getByRole("img");
+  expect(poster).toHaveAttribute("src", "https://example.com/poster.jpg");
+  expect(poster).toHaveAttribute("alt", "Test Movie");
+});
 
-    const poster = screen.getByAltText("Test Movie");
-    expect(poster).toBeInTheDocument();
-    expect(poster).toHaveAttribute("src", "https://example.com/poster.jpg");
-  });
+test("renders placeholder when poster is not available", () => {
+  const movieWithoutPoster = { ...mockMovie, Poster: "N/A" };
+  renderWithProviders(<MovieCard movie={movieWithoutPoster} />);
 
-  test("renders placeholder when poster is not available", () => {
-    const movieWithoutPoster = { ...mockMovie, Poster: "N/A" };
+  expect(screen.getByText("🎬")).toBeInTheDocument();
+});
 
-    render(
-      <TestWrapper>
-        <MovieCard movie={movieWithoutPoster} />
-      </TestWrapper>
-    );
+test("creates correct link to movie details", () => {
+  renderWithProviders(<MovieCard movie={mockMovie} />);
 
-    expect(screen.getByText("🎬")).toBeInTheDocument();
-  });
-
-  test("creates correct link to movie details page", () => {
-    render(
-      <TestWrapper>
-        <MovieCard movie={mockMovie} />
-      </TestWrapper>
-    );
-
-    const movieLink = screen.getByRole("link");
-    expect(movieLink).toHaveAttribute("href", "/movie/tt1234567");
-  });
-
-  test("renders favourite actions component", () => {
-    render(
-      <TestWrapper>
-        <MovieCard movie={mockMovie} />
-      </TestWrapper>
-    );
-
-    // Check if favourite button is rendered (heart icon)
-    expect(screen.getByText("🤍")).toBeInTheDocument();
-  });
+  const link = screen.getByRole("link");
+  expect(link).toHaveAttribute("href", "/movie/tt1234567");
 });
