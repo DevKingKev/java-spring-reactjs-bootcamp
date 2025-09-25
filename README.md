@@ -275,3 +275,16 @@ Use this project to understand:
 ---
 
 **Happy coding! 🚀** Start with `docker-compose up` and begin exploring the codebase.
+
+
+
+
+<!-- Additional Tools for Advanced Testing
+
+Visual Regression Testing:
+# Storybook + Chromatic
+npm install --save-dev @storybook/react chromatic
+Accessibility Testing:
+npm install --save-dev jest-axe
+E2E Testing:
+npm install --save-dev @playwright/test -->
