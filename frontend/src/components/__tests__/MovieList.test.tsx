@@ -95,7 +95,7 @@ describe("MovieList", () => {
 
       const movieCards = screen.getAllByTestId(/movie-card-/);
       expect(movieCards).toHaveLength(3);
-      
+
       // Movies should be sorted: Avatar, Batman Begins, The Dark Knight
       expect(screen.getByText("Avatar")).toBeInTheDocument();
       expect(screen.getByText("Batman Begins")).toBeInTheDocument();
@@ -111,9 +111,7 @@ describe("MovieList", () => {
     });
 
     it("displays movie count by default", () => {
-      renderWithProviders(
-        <MovieList movies={mockMovies} title="Movies" />
-      );
+      renderWithProviders(<MovieList movies={mockMovies} title="Movies" />);
 
       expect(screen.getByText("3 movies")).toBeInTheDocument();
     });
@@ -148,10 +146,10 @@ describe("MovieList", () => {
     it("displays title with search query when showSearchQuery is true", () => {
       const store = createMockStore("batman");
       renderWithProviders(
-        <MovieList 
-          movies={mockMovies} 
-          title="Results" 
-          showSearchQuery={true} 
+        <MovieList
+          movies={mockMovies}
+          title="Results"
+          showSearchQuery={true}
         />,
         store
       );
@@ -162,10 +160,7 @@ describe("MovieList", () => {
     it("uses default title with search query when no title provided", () => {
       const store = createMockStore("batman");
       renderWithProviders(
-        <MovieList 
-          movies={mockMovies} 
-          showSearchQuery={true} 
-        />,
+        <MovieList movies={mockMovies} showSearchQuery={true} />,
         store
       );
 
@@ -175,10 +170,10 @@ describe("MovieList", () => {
     it("shows normal title when showSearchQuery is true but no search query", () => {
       const store = createMockStore("");
       renderWithProviders(
-        <MovieList 
-          movies={mockMovies} 
+        <MovieList
+          movies={mockMovies}
           title="All Movies"
-          showSearchQuery={true} 
+          showSearchQuery={true}
         />,
         store
       );
@@ -198,10 +193,7 @@ describe("MovieList", () => {
 
     it("shows custom empty message", () => {
       renderWithProviders(
-        <MovieList 
-          movies={[]} 
-          emptyMessage="No search results found" 
-        />
+        <MovieList movies={[]} emptyMessage="No search results found" />
       );
 
       expect(screen.getByText("No search results found")).toBeInTheDocument();
@@ -209,21 +201,21 @@ describe("MovieList", () => {
 
     it("shows empty subtitle when provided", () => {
       renderWithProviders(
-        <MovieList 
-          movies={[]} 
+        <MovieList
+          movies={[]}
           emptyMessage="No movies found"
-          emptySubtitle="Try a different search term" 
+          emptySubtitle="Try a different search term"
         />
       );
 
       expect(screen.getByText("No movies found")).toBeInTheDocument();
-      expect(screen.getByText("Try a different search term")).toBeInTheDocument();
+      expect(
+        screen.getByText("Try a different search term")
+      ).toBeInTheDocument();
     });
 
     it("applies custom className to empty state", () => {
-      renderWithProviders(
-        <MovieList movies={[]} className="custom-empty" />
-      );
+      renderWithProviders(<MovieList movies={[]} className="custom-empty" />);
 
       // Test that the empty state renders correctly with custom className
       expect(screen.getByText("No movies to display")).toBeInTheDocument();
@@ -231,11 +223,7 @@ describe("MovieList", () => {
 
     it("does not show title or count in empty state", () => {
       renderWithProviders(
-        <MovieList 
-          movies={[]} 
-          title="Movies"
-          showCount={true}
-        />
+        <MovieList movies={[]} title="Movies" showCount={true} />
       );
 
       expect(screen.queryByText("Movies")).not.toBeInTheDocument();
@@ -287,23 +275,32 @@ describe("MovieList", () => {
         },
       ];
 
-      renderWithProviders(<MovieList movies={specialCharMovies} title="Special Movies" />);
+      renderWithProviders(
+        <MovieList movies={specialCharMovies} title="Special Movies" />
+      );
 
       expect(screen.getByText("Amélie")).toBeInTheDocument();
-      expect(screen.getByText("The Lord of the Rings: The Fellowship of the Ring")).toBeInTheDocument();
+      expect(
+        screen.getByText("The Lord of the Rings: The Fellowship of the Ring")
+      ).toBeInTheDocument();
       expect(screen.getByText("2 movies")).toBeInTheDocument();
     });
 
     it("handles large number of movies", () => {
-      const manyMovies: MovieListItem[] = Array.from({ length: 100 }, (_, i) => ({
-        Title: `Movie ${String(i + 1).padStart(3, '0')}`,
-        Year: "2023",
-        imdbID: `tt${String(i + 1).padStart(7, '0')}`,
-        Type: "movie" as const,
-        Poster: `https://example.com/movie${i + 1}.jpg`,
-      }));
+      const manyMovies: MovieListItem[] = Array.from(
+        { length: 100 },
+        (_, i) => ({
+          Title: `Movie ${String(i + 1).padStart(3, "0")}`,
+          Year: "2023",
+          imdbID: `tt${String(i + 1).padStart(7, "0")}`,
+          Type: "movie" as const,
+          Poster: `https://example.com/movie${i + 1}.jpg`,
+        })
+      );
 
-      renderWithProviders(<MovieList movies={manyMovies} title="Many Movies" />);
+      renderWithProviders(
+        <MovieList movies={manyMovies} title="Many Movies" />
+      );
 
       expect(screen.getByText("100 movies")).toBeInTheDocument();
       expect(screen.getAllByTestId(/movie-card-/)).toHaveLength(100);
@@ -321,24 +318,23 @@ describe("MovieList", () => {
     it("reads search query from Redux store", () => {
       const store = createMockStore("superhero movies");
       renderWithProviders(
-        <MovieList 
-          movies={mockMovies} 
+        <MovieList
+          movies={mockMovies}
           title="Search Results"
-          showSearchQuery={true} 
+          showSearchQuery={true}
         />,
         store
       );
 
-      expect(screen.getByText("Search Results: superhero movies")).toBeInTheDocument();
+      expect(
+        screen.getByText("Search Results: superhero movies")
+      ).toBeInTheDocument();
     });
 
     it("updates when search query changes", () => {
       const store = createMockStore("action");
       const { rerender } = renderWithProviders(
-        <MovieList 
-          movies={mockMovies} 
-          showSearchQuery={true} 
-        />,
+        <MovieList movies={mockMovies} showSearchQuery={true} />,
         store
       );
 
@@ -349,10 +345,7 @@ describe("MovieList", () => {
       rerender(
         <Provider store={newStore}>
           <BrowserRouter>
-            <MovieList 
-              movies={mockMovies} 
-              showSearchQuery={true} 
-            />
+            <MovieList movies={mockMovies} showSearchQuery={true} />
           </BrowserRouter>
         </Provider>
       );
